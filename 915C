@@ -1,0 +1,74 @@
+#include <iostream>
+
+using namespace std;
+
+size_t digit_distributor64(long long x, __int8* aRr)
+{
+	size_t length = 0;
+	for (__int8 i = 0; i < 19; ++i)
+	{
+		aRr[i] = x % 10;
+		if (!(x /= 10))
+		{
+			length = ++i;
+			for (; i < 19; ++i)
+				aRr[i] = 0;
+		}
+	}
+	return length;
+}
+
+size_t digit_distributor10(long long x, __int8* aRr)
+{
+	size_t length = 0;
+	for (__int8 i = 0; i < 10; ++i)
+	{
+		aRr[i] = 0;
+	}
+	for (__int8 i = 0; ; ++i)
+	{
+		++aRr[x % 10];
+		if (!(x /= 10))
+		{
+			length = i + 1;
+			break;
+		}
+	}
+	return length;
+}
+
+size_t length64(long long x)
+{
+	for (size_t i = 0; ; ++i)
+	{
+		if (!(x /= 10))
+			return i + 1;
+	}
+}
+
+int main()
+{
+	long long a, b;
+
+	cin >> a >> b;
+
+	__int8 *aRrA = new __int8[10], *aRrB = new __int8[19];
+
+	int La = digit_distributor10(a, aRrA), Lb = digit_distributor64(b, aRrB);
+
+	__int8 i;
+	do
+	{
+		for (i = aRrB[--La]; i >= 0; --i)
+			if (aRrA[i])
+				break;
+		if (i == aRrB[La])
+			;
+	} while (i == aRrB[La]);
+
+	for (__int8 i = 9; i >= 0; --i)
+		for (__int8 k = 0; k < aRrA[i]; ++k)
+			cout << +i;
+
+	system("pause");
+}
