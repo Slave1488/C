@@ -2,10 +2,10 @@
 
 using namespace std;
 
-size_t digit_distributor64(long long x, __int8* aRr)
+size_t digit_distributor64(long long x, char* aRr)
 {
 	size_t length = 0;
-	for (__int8 i = 0; i < 19; ++i)
+	for (char i = 0; i < 19; ++i)
 	{
 		aRr[i] = x % 10;
 		if (!(x /= 10))
@@ -18,14 +18,14 @@ size_t digit_distributor64(long long x, __int8* aRr)
 	return length;
 }
 
-size_t digit_distributor10(long long x, __int8* aRr)
+size_t digit_distributor10(long long x, char* aRr)
 {
 	size_t length = 0;
-	for (__int8 i = 0; i < 10; ++i)
+	for (char i = 0; i < 10; ++i)
 	{
 		aRr[i] = 0;
 	}
-	for (__int8 i = 0; ; ++i)
+	for (char i = 0; ; ++i)
 	{
 		++aRr[x % 10];
 		if (!(x /= 10))
@@ -37,13 +37,15 @@ size_t digit_distributor10(long long x, __int8* aRr)
 	return length;
 }
 
-size_t length64(long long x)
+bool crit(const char* aRr, char x)
 {
-	for (size_t i = 0; ; ++i)
+	bool t = false;
+	for (; --x >= 0;)
 	{
-		if (!(x /= 10))
-			return i + 1;
+		if (t = aRr[x])
+			break;
 	}
+	return t;
 }
 
 int main()
@@ -52,23 +54,57 @@ int main()
 
 	cin >> a >> b;
 
-	__int8 *aRrA = new __int8[10], *aRrB = new __int8[19];
+	char *aRrA = new char[10], *aRrB = new char[19];
 
-	int La = digit_distributor10(a, aRrA), Lb = digit_distributor64(b, aRrB);
+	char La = digit_distributor10(a, aRrA), Lb = digit_distributor64(b, aRrB);
 
-	__int8 i;
-	do
+	char *aRrA2 = new char[10];
+	digit_distributor10(a, aRrA2);
+
+	if (La > Lb)
+		aRrA[0] -= La - Lb;
+	for (char i = 0; i < La - Lb; ++i)
+		cout << 0;
+
+	if (La >= Lb)
 	{
-		for (i = aRrB[--La]; i >= 0; --i)
-			if (aRrA[i])
-				break;
-		if (i == aRrB[La])
-			;
-	} while (i == aRrB[La]);
+		char lasTdano;
 
-	for (__int8 i = 9; i >= 0; --i)
-		for (__int8 k = 0; k < aRrA[i]; ++k)
+		for (char i = Lb - 1; i >= 0; --i)
+		{
+			if (crit(aRrA2, aRrB[i]))
+				lasTdano = i;
+			if (aRrA2[aRrB[i]])
+			{
+				if(i == 0)
+					lasTdano = i;
+				--aRrA2[aRrB[i]];
+				//cout << +aRrB[i] << '-' << +aRrA2[aRrB[i]] << '\n';
+			}
+			else
+				break;
+		}
+
+		//cout << +lasTdano << '\n';
+
+		for (char i = Lb - 1; i > lasTdano; --i)
+		{
+			cout << +aRrB[i];
+			--aRrA[aRrB[i]];
+		}
+
+		for (char i = aRrB[lasTdano] - 1; i >= 0; --i)
+			if (aRrA[i])
+			{
+				--aRrA[i];
+				cout << +i;
+				break;
+			}
+	}
+
+	for (char i = 9; i >= 0; --i)
+		for (char k = 0; k < aRrA[i]; ++k)
 			cout << +i;
 
-	system("pause");
+	//system("pause");
 }
